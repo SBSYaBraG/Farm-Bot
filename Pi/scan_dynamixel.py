@@ -1,6 +1,6 @@
 """
 Dynamixel AX-18A Scanner
-Scans all common baudrates and IDs 0-253 on /dev/ttyUSB0
+Scans the three most common AX-18A baudrates and IDs 0-20 on /dev/ttyUSB0
 using both Protocol 1.0 and Protocol 2.0.
 Prints every attempt in real time with raw error codes.
 """
@@ -9,9 +9,9 @@ import serial
 import time
 
 PORT      = "/dev/ttyUSB0"
-BAUDRATES = [1000000, 57600, 115200, 9600, 4800, 19200, 38400]
-ID_RANGE  = range(0, 254)   # 0-253
-DELAY     = 0.5             # seconds between each attempt
+BAUDRATES = [1000000, 57600, 115200]  # most common AX-18A baudrates
+ID_RANGE  = range(0, 21)              # 0-20 (factory default is ID 1)
+DELAY     = 0.1                       # seconds between each attempt
 
 # ─── Protocol 1.0 ────────────────────────────────────────────────────────────
 
@@ -175,11 +175,12 @@ def main():
     print("=" * 60)
     print(f"  Dynamixel AX-18A Scanner")
     print(f"  Port     : {PORT}")
-    print(f"  IDs      : {min(ID_RANGE)}-{max(ID_RANGE)}")
+    print(f"  IDs      : {min(ID_RANGE)}-{max(ID_RANGE)}  (expand ID_RANGE for full sweep)")
     print(f"  Baudrates: {BAUDRATES}")
     print(f"  Protocols: 1.0 and 2.0")
     print(f"  Delay    : {DELAY}s per attempt")
-    print(f"  Total    : {total_attempts} attempts (~{total_attempts * DELAY / 60:.0f} min)")
+    est_sec = total_attempts * DELAY
+  print(f"  Total    : {total_attempts} attempts (~{est_sec:.0f}s / {est_sec/60:.1f} min)")
     print("=" * 60 + "\n")
 
     all_found = {}
