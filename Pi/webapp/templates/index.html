@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- user-scalable=no stops an accidental pinch-zoom while jabbing at
+       controls, which matters on a touchscreen in a greenhouse. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>AgriGantry Control</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <!-- ============================================================
+       TOP BAR
+       ============================================================ -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark"></span>
+      <h1>AgriGantry<span class="brand-light"> Control</span></h1>
+    </div>
+    <div class="topbar-status">
+      <!-- Says SIMULATED when no real hardware is attached. Always visible:
+           the same interface will one day move real motors and the operator
+           should never have to guess which they are looking at. -->
+      <span id="mode-badge" class="badge badge-sim">SIMULATED</span>
+      <span class="conn">
+        <span id="conn-dot" class="dot dot-off"></span>
+        <span id="conn-text">Connecting…</span>
+      </span>
+    </div>
+  </header>
+
+  <div id="estop-banner" class="banner banner-estop hidden">
+    EMERGENCY STOP ACTIVE — motion halted. Press RESUME to re-enable controls.
+  </div>
+  <div id="alm-banner" class="banner banner-alm hidden">
+    MOTOR ALARM — one or more drivers are reporting a fault.
+  </div>
+
+  <main class="layout">
+
+    <!-- ============================================================
+         THE MACHINE. The wide panel is the centrepiece of the page.
+         ============================================================ -->
+    <section class="panel panel-scene">
+      <div class="scene-head">
+        <h2>Machine View</h2>
+        <div class="scene-tools">
+          <button id="btn-reset-view" class="btn btn-small">RESET VIEW</button>
+        </div>
+      </div>
+
+      <div class="scene-frame">
+        <div id="scene-container" class="scene-container"></div>
+        <div id="scene-status" class="scene-status">Loading machine…</div>
+
+        <!-- ========================================================
+             MINIMAP, in the corner of the scene.
+
+             A perspective camera is a poor way to judge exactly where the
+             tool head sits over the bed. This gives that back at a glance,
+             and being small and circular it reads as an instrument rather
+             than competing with the machine behind it.
+             ======================================================== -->
+        <div class="minimap">
+          <div class="minimap-dial">
+            <!-- The bed, drawn to the machine's true proportions by JS. -->
+            <div id="mini-bed" class="mini-bed">
+              <div id="mini-gantry" class="mini-gantry"></div>
+              <div id="mini-tool" class="mini-tool"></div>
+            </div>
+            <div class="minimap-home">H</div>
+          </div>
+          <div class="minimap-readout">
+            <span id="mini-x">X —</span>
+            <span id="mini-y">Y —</span>
+            <span id="mini-z">Z —</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CONTROL DECK
+         ============================================================ -->
+    <!-- On a wide screen this becomes its own scrolling region, independent
+         of the machine view beside it. See APP SHELL in style.css. -->
+    <aside class="deck">
+
+      <!-- Safety first in the markup so that on a phone, where the layout
+           stacks, the emergency stop stays near the top. -->
+      <div class="panel panel-safety">
+        <button id="btn-estop" class="btn btn-estop">EMERGENCY&nbsp;STOP</button>
+        <button id="btn-resume" class="btn btn-resume">RESUME</button>
+      </div>
+
+      <div class="panel">
+        <h2>Homing</h2>
+        <p class="hint">Axes must be homed before they will accept moves.</p>
+        <button id="btn-home-all" class="btn btn-primary btn-wide">HOME ALL AXES</button>
+      </div>
+
+      <!-- Per-axis controls are generated from /api/config, so resizing or
+           renaming an axis there updates this with no edits here. -->
+      <div id="axis-controls"></div>
+
+      <div class="panel">
+        <h2>Motor Alarms</h2>
+        <div id="alm-lights" class="alm-lights"></div>
+      </div>
+
+      <details class="panel panel-dev">
+        <summary>Developer Tools (simulation only)</summary>
+        <p class="hint">
+          Inject fake faults to test the alarm display. No equivalent on real
+          hardware.
+        </p>
+        <div id="dev-alm-buttons" class="dev-buttons"></div>
+        <button id="btn-clear-alm" class="btn btn-small">Clear all alarms</button>
+      </details>
+    </aside>
+  </main>
+
+  <!-- ============================================================
+       EVENT LOG: mirrors the messages the Arduino prints over serial.
+       ============================================================ -->
+  <section class="panel panel-log">
+    <h2>Event Log</h2>
+    <div id="log" class="log"></div>
+  </section>
+
+  <script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+  <!-- three.js is loaded as ES modules. The import map lets scene3d.js write
+       `import ... from "three"` while the files are served from this server
+       rather than a CDN - the machine may sit on WiFi with no internet. -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "{{ url_for('static', filename='vendor/three/three.module.min.js') }}",
+      "three/addons/loaders/GLTFLoader.js": "{{ url_for('static', filename='vendor/three/GLTFLoader.js') }}",
+      "three/addons/controls/OrbitControls.js": "{{ url_for('static', filename='vendor/three/OrbitControls.js') }}"
+    }
+  }
+  </script>
+
+  <script type="module">
+    import * as scene3d from "{{ url_for('static', filename='js/scene3d.js') }}";
+
+    const statusEl = document.getElementById("scene-status");
+
+    scene3d.init(
+      document.getElementById("scene-container"),
+      "{{ url_for('static', filename='models/farmbot_model.glb') }}"
+    ).then(function () {
+      // Hand over whatever has already arrived, so the machine is in the
+      // right pose on its very first frame rather than snapping into place.
+      if (window.farmbotConfig) { scene3d.setMachineConfig(window.farmbotConfig); }
+      if (window.farmbotStatus) { scene3d.update(window.farmbotStatus); }
+      scene3d.start();
+      statusEl.classList.add("is-gone");
+    }).catch(function (err) {
+      statusEl.textContent = "Could not load the machine model: " + err.message;
+      statusEl.classList.add("is-error");
+    });
+
+    // app.js publishes each update on window; the 3D view picks them up here.
+    // The scene and the minimap therefore render from one identical payload
+    // and can never disagree about where the machine is.
+    window.addEventListener("farmbot:status", function (e) { scene3d.update(e.detail); });
+    window.addEventListener("farmbot:config", function (e) { scene3d.setMachineConfig(e.detail); });
+
+    document.getElementById("btn-reset-view")
+      .addEventListener("click", function () { scene3d.resetView(); });
+  </script>
+</body>
+</html>

@@ -1,0 +1,604 @@
+/* ============================================================
+   style.css - AgriGantry Control
+
+   A control station, not a website. Dark, high contrast, large touch
+   targets: it may run all day on a monitor in a greenhouse, be operated
+   with gloves on, and be read from across a room.
+
+   Panels are SOLID. An earlier version floated translucent frosted-glass
+   panels over a full-page 3D scene; the effect muddied the panels and cost
+   the Raspberry Pi's compositor real work, since backdrop-filter re-blurs
+   the live scene behind every panel on every frame. Solid surfaces read
+   better and cost nothing.
+   ============================================================ */
+
+/* -------------------- DESIGN TOKENS -------------------- */
+:root {
+  --bg:          #0e1218;   /* page */
+  --panel:       #171d26;   /* raised surface */
+  --panel-edge:  #262f3c;   /* panel borders */
+  --inset:       #0a0d12;   /* recessed wells (scene frame, log) */
+
+  --text:        #e8edf4;
+  --text-dim:    #8d99ab;
+
+  --accent:      #43b0a3;   /* AgriGantry teal, taken from the machine */
+  --good:        #3fc47c;
+  --warn:        #e8a838;
+  --bad:         #e8484f;
+
+  --radius: 10px;
+  --gap: 14px;
+}
+
+/* -------------------- RESET / BASE -------------------- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+  padding: var(--gap);
+  padding-bottom: 32px;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 { font-size: 1.05rem; font-weight: 600; letter-spacing: 0.4px; }
+
+h2 {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.3px;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+
+.hint { font-size: 0.76rem; color: var(--text-dim); margin-bottom: 9px; }
+.hidden { display: none !important; }
+
+/* -------------------- TOP BAR -------------------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: var(--gap);
+}
+
+.brand { display: flex; align-items: center; gap: 10px; }
+
+/* A small teal square standing in for a logo - enough to make the name feel
+   deliberate without inventing branding. */
+.brand-mark {
+  width: 16px; height: 16px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, var(--accent), #2b7d74);
+  box-shadow: 0 0 12px rgba(67, 176, 163, 0.45);
+}
+
+.brand-light { color: var(--text-dim); font-weight: 400; }
+
+.topbar-status { display: flex; align-items: center; gap: 14px; }
+
+.badge {
+  font-size: 0.66rem; font-weight: 700; letter-spacing: 1px;
+  padding: 4px 9px; border-radius: 4px;
+}
+
+/* Amber rather than green: "simulated" is a caveat and the colour says so. */
+.badge-sim  { background: rgba(232,168,56,0.14); color: var(--warn);
+              border: 1px solid rgba(232,168,56,0.4); }
+.badge-live { background: rgba(63,196,124,0.14); color: var(--good);
+              border: 1px solid rgba(63,196,124,0.4); }
+
+.conn { display: flex; align-items: center; gap: 7px;
+        font-size: 0.78rem; color: var(--text-dim); }
+
+.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.dot-on  { background: var(--good); box-shadow: 0 0 8px var(--good); }
+.dot-off { background: var(--bad);  box-shadow: 0 0 8px var(--bad); }
+
+/* -------------------- BANNERS -------------------- */
+.banner {
+  padding: 11px 16px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 0.84rem;
+  text-align: center;
+  margin-bottom: var(--gap);
+}
+
+.banner-estop {
+  background: var(--bad); color: #fff;
+  /* Slow enough not to be painful on a screen watched all day, insistent
+     enough to catch the eye from across the room. */
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.banner-alm {
+  background: rgba(232,168,56,0.14);
+  border: 1px solid var(--warn);
+  color: var(--warn);
+}
+
+@keyframes pulse { 50% { opacity: 0.66; } }
+
+/* -------------------- LAYOUT --------------------
+   The machine gets the lion's share of the width; the deck takes only what
+   its controls need. 360px is chosen so a row of three jog buttons sits
+   comfortably without wrapping. */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: var(--gap);
+  align-items: start;
+}
+
+.deck { display: flex; flex-direction: column; gap: var(--gap); }
+
+/* -------------------- SCROLLBARS --------------------
+   Thin and dim. A control station is watched all day; a default chrome
+   scrollbar down the middle of it is a bright stripe that never stops
+   competing with the machine for attention.
+
+   Targeted by element rather than by a helper class in the HTML. A class
+   would mean the stylesheet could not make something scroll on its own - the
+   template would have to agree - and a template that has not caught up is
+   exactly how the deck ended up spilling behind the event log instead of
+   scrolling. CSS that depends only on CSS cannot fall out of step. */
+.deck, .log {
+  overscroll-behavior: contain;   /* scrolling past the end must not drag the page */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.16) transparent;
+}
+
+.deck::-webkit-scrollbar,
+.log::-webkit-scrollbar { width: 6px; }
+
+.deck::-webkit-scrollbar-thumb,
+.log::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.16); border-radius: 3px;
+}
+
+.deck::-webkit-scrollbar-track,
+.log::-webkit-scrollbar-track { background: transparent; }
+
+/* -------------------- PANELS -------------------- */
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-edge);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+
+.panel-log { margin-top: var(--gap); }
+
+/* -------------------- THE SCENE -------------------- */
+
+/* Tighter padding than a normal panel: the machine is the point of this
+   panel, so give the frame as much of the width as possible. */
+.panel-scene { padding: 12px; }
+
+.scene-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 12px;
+}
+.scene-head h2 { margin-bottom: 0; }
+
+.scene-tools { display: flex; gap: 7px; }
+
+/* The frame is a recessed well the machine sits inside. Positioned so the
+   minimap can be placed against its corner. */
+.scene-frame {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--panel-edge);
+  /* A soft gradient reads as a horizon behind the machine. The WebGL canvas
+     is transparent, so this shows through - cheaper than rendering a skybox
+     and it keeps the model the only thing actually drawn. */
+  background:
+    radial-gradient(ellipse 110% 75% at 50% 100%, #1a2029, transparent 70%),
+    linear-gradient(180deg, #0a0d12, #11161d);
+}
+
+.scene-container {
+  width: 100%;
+  /* 16:9, not a wider letterbox. The machine is 1.38 m tall and 1.23 m long -
+     taller than it is long, once the legs and gantry are counted - so its
+     silhouette is roughly square. A cinematic frame would leave big empty
+     margins either side and make the machine look small and far away. */
+  aspect-ratio: 16 / 9;
+  /* Lets a drag rotate the model rather than scrolling the page on a
+     touchscreen. */
+  touch-action: none;
+}
+
+.scene-container canvas { display: block; width: 100%; height: 100%; }
+
+.scene-status {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+
+.scene-status.is-gone { opacity: 0; }
+.scene-status.is-error { color: var(--bad); max-width: 70%; text-align: center; }
+
+/* -------------------- MINIMAP -------------------- */
+.minimap {
+  position: absolute;
+  left: 14px; bottom: 14px;
+  width: 150px; height: 150px;
+  border-radius: 50%;
+  background: rgba(10, 13, 18, 0.86);
+  border: 1px solid var(--panel-edge);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.5);
+  pointer-events: none;   /* never steals a camera drag */
+}
+
+.minimap-dial {
+  position: relative;
+  width: 104px; height: 104px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(67,176,163,0.10), transparent 65%),
+    rgba(0, 0, 0, 0.34);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+
+/* Faint crosshair, so the dial reads as an instrument. */
+.minimap-dial::before,
+.minimap-dial::after {
+  content: ""; position: absolute; background: rgba(255, 255, 255, 0.06);
+}
+.minimap-dial::before { left: 0; right: 0; height: 1px; }
+.minimap-dial::after  { top: 0; bottom: 0; width: 1px; }
+
+/* The bed. Aspect ratio set from real machine geometry by JavaScript, so the
+   plan is always in the machine's true proportions. */
+.mini-bed {
+  position: relative;
+  width: 84%;
+  background: rgba(196, 144, 92, 0.20);
+  border: 1px solid rgba(224, 164, 88, 0.45);
+  border-radius: 2px;
+}
+
+/* The gantry: spans the bed's width, slides along its length. */
+.mini-gantry {
+  position: absolute;
+  top: -2px; bottom: -2px;
+  width: 2px; margin-left: -1px;
+  background: var(--text-dim);
+  /* The server broadcasts about 8 times a second; this interpolates between
+     those snapshots so travel glides instead of stepping. Matched to the
+     broadcast interval - longer would visibly lag the machine. */
+  transition: left 0.13s linear;
+  left: 0;
+}
+
+/* The tool head, riding on the gantry. */
+.mini-tool {
+  position: absolute;
+  width: 9px; height: 9px;
+  margin: -4.5px 0 0 -4.5px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 1.5px solid #fff;
+  box-shadow: 0 0 10px var(--accent);
+  transition: left 0.13s linear, top 0.13s linear;
+  z-index: 2;
+  left: 0; top: 0;
+}
+
+.minimap-home {
+  position: absolute;
+  top: 5px; left: 8px;
+  font-size: 0.52rem; font-weight: 700;
+  color: rgba(255, 255, 255, 0.34);
+}
+
+.minimap-readout {
+  display: flex; gap: 8px;
+  font-size: 0.57rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-dim);
+  letter-spacing: 0.3px;
+}
+
+/* -------------------- BUTTONS -------------------- */
+.btn {
+  font-family: inherit;
+  font-size: 0.82rem; font-weight: 600;
+  color: var(--text);
+  background: #232c38;
+  border: 1px solid #2f3a49;
+  border-radius: 7px;
+  /* 44px is the accepted comfortable touch target. */
+  min-height: 44px;
+  padding: 9px 13px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, transform 0.06s;
+}
+
+.btn:hover:not(:disabled) { background: #2b3543; border-color: #3a4759; }
+.btn:active:not(:disabled) { transform: translateY(1px); }
+
+/* Disabled controls must look unmistakably dead: during an emergency stop
+   the operator needs to see instantly that the machine will not respond. */
+.btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.btn-primary {
+  background: var(--accent); border-color: var(--accent); color: #041a17;
+}
+.btn-primary:hover:not(:disabled) { background: #56c6b8; border-color: #56c6b8; }
+
+.btn-wide { width: 100%; }
+.btn-small { min-height: 32px; padding: 6px 11px; font-size: 0.7rem;
+             letter-spacing: 0.5px; }
+
+/* The stop button dominates by size, the way a physical mushroom head does. */
+.panel-safety { display: flex; gap: 10px; }
+
+.btn-estop {
+  flex: 2;
+  background: var(--bad); border-color: var(--bad); color: #fff;
+  font-size: 0.95rem; font-weight: 800; letter-spacing: 0.8px;
+  min-height: 58px;
+}
+.btn-estop:hover:not(:disabled) { background: #ff5b62; border-color: #ff5b62; }
+
+.btn-resume { flex: 1; min-height: 58px; }
+
+/* -------------------- AXIS PANELS -------------------- */
+.axis-panel { margin-bottom: var(--gap); }
+
+.axis-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.axis-name { font-size: 0.85rem; font-weight: 600; }
+
+.homed-badge {
+  font-size: 0.58rem; font-weight: 700; letter-spacing: 0.7px;
+  padding: 3px 7px; border-radius: 3px;
+  background: rgba(232,72,79,0.14); color: var(--bad);
+  border: 1px solid rgba(232,72,79,0.32);
+}
+
+.homed-badge.is-homed {
+  background: rgba(63,196,124,0.14); color: var(--good);
+  border-color: rgba(63,196,124,0.32);
+}
+
+/* Live position for this axis. tabular-nums keeps digit widths equal so the
+   number does not jitter sideways while the machine is moving. */
+.axis-readout {
+  display: flex; align-items: baseline; gap: 8px;
+  margin-bottom: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.axis-mm { font-size: 1.05rem; font-weight: 600; }
+.axis-sub { font-size: 0.66rem; color: var(--text-dim); }
+
+/* Jog buttons: two rows of three rather than one wrapping row. Grid keeps
+   every button the same width, so negative and positive steps line up in
+   matching columns and the control reads symmetrically. */
+.jog-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.jog-row .btn { padding: 8px 4px; font-size: 0.76rem; }
+
+.abs-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.abs-row .btn { padding: 6px 4px; }
+
+/* -------------------- ALARM LIGHTS -------------------- */
+.alm-lights { display: flex; gap: 7px; flex-wrap: wrap; }
+
+.alm-light {
+  flex: 1; min-width: 52px; text-align: center;
+  background: var(--inset);
+  border: 1px solid var(--panel-edge);
+  border-radius: 6px;
+  padding: 8px 4px;
+}
+
+.alm-light .alm-bulb {
+  width: 11px; height: 11px; border-radius: 50%;
+  margin: 0 auto 5px;
+  background: #2a3240;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+/* Healthy motors glow softly green; a faulted one glows red and pulses so it
+   is identifiable from across the room. */
+.alm-light.ok    .alm-bulb { background: var(--good);
+                             box-shadow: 0 0 7px var(--good); }
+.alm-light.fault .alm-bulb { background: var(--bad);
+                             box-shadow: 0 0 11px var(--bad);
+                             animation: pulse 0.8s ease-in-out infinite; }
+
+.alm-light .alm-name { font-size: 0.63rem; font-weight: 600;
+                       color: var(--text-dim); letter-spacing: 0.4px; }
+
+/* -------------------- DEVELOPER TOOLS -------------------- */
+/* Dashed edge marks this as "not part of the real machine". */
+.panel-dev { border-style: dashed; }
+
+.panel-dev summary {
+  cursor: pointer; font-size: 0.7rem; font-weight: 700;
+  color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px;
+  list-style: none;
+}
+.panel-dev summary::-webkit-details-marker { display: none; }
+.panel-dev[open] summary { margin-bottom: 10px; }
+
+.dev-buttons { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 8px; }
+
+/* -------------------- EVENT LOG -------------------- */
+.log {
+  /* Monospace so timestamps line up into a readable column. */
+  font-family: "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.72rem;
+  line-height: 1.6;
+  background: var(--inset);
+  border: 1px solid var(--panel-edge);
+  border-radius: 7px;
+  padding: 10px 12px;
+  height: 150px;
+  overflow-y: auto;
+  color: var(--text-dim);
+  /* Scrollbar cosmetics are shared with the deck, up in SCROLLBARS. */
+}
+
+.log-line { white-space: pre-wrap; word-break: break-word; }
+
+/* Colour-code what matters so it stands out in a wall of text. */
+.log-line.is-alert { color: var(--bad); font-weight: 600; }
+.log-line.is-warn  { color: var(--warn); }
+.log-line.is-sim   { color: #9a86e8; }
+
+/* ============================================================
+   APP SHELL - the deck scrolls, the machine does not
+
+   By default this page is an ordinary scrolling document. That was wrong for
+   a control station: the deck is taller than the machine view, so reaching
+   the alarm lights meant scrolling the machine itself off the top of the
+   screen. On the Pi's wall-mounted monitor there is nowhere to scroll back
+   to - the operator just loses sight of the machine.
+
+   So above this size the page becomes a fixed shell: everything is pinned to
+   the viewport, the machine view grows to fill whatever height is left over,
+   and only the deck scrolls. The two are independent - moving through the
+   controls never disturbs the view of the machine.
+
+   The min-height condition matters. In a short window there is no height
+   left over to give the machine, and pinning everything would squash the
+   scene into a letterbox slit. Below that the page falls back to scrolling
+   normally, which is always usable even if it is less elegant.
+   ============================================================ */
+@media (min-width: 1001px) and (min-height: 640px) {
+  html, body { height: 100%; }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;          /* the page itself never scrolls */
+    padding-bottom: var(--gap);
+  }
+
+  /* Takes all the height the header, banners and log leave behind.
+     min-height:0 is what actually permits it to shrink - without it a grid
+     item refuses to go below the size of its contents and the log gets
+     pushed off the bottom of the screen. */
+  .layout {
+    flex: 1 1 auto;
+    min-height: 0;
+    align-items: stretch;      /* both columns run the full height */
+    /* THIS is what makes the deck scroll rather than the page.
+       A grid row defaults to `auto`, which means "as tall as the tallest
+       item" - so the row simply grew to fit the whole deck and pushed it out
+       of the shell. Nothing was ever too tall for its box, so nothing ever
+       overflowed, so no scrollbar. Pinning the row to minmax(0, 1fr) makes it
+       exactly the height available instead, which is what finally gives the
+       deck an edge to overflow against. */
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  /* The scene panel becomes a column so the frame can absorb the slack. */
+  .panel-scene {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .scene-frame { flex: 1 1 auto; min-height: 0; }
+
+  /* Height now comes from the layout, not from a fixed ratio. The 3D view
+     re-measures its container on every resize and adapts the camera to
+     whatever shape it is given, so it simply fills the space.
+
+     Filling the frame absolutely rather than with height:100% is deliberate:
+     a percentage height depends on the parent having resolved a definite one,
+     which a flex item that is still growing has not necessarily done. Pinning
+     to all four edges of the frame cannot be ambiguous, and a canvas measured
+     as zero is exactly the bug that produced the "blurry model" earlier. */
+  .scene-container {
+    position: absolute;
+    inset: 0;
+    aspect-ratio: auto;
+  }
+
+  /* The deck is the only thing that scrolls, and only here - in the stacked
+     phone layout it has no fixed height to overflow and the page scrolls
+     instead. The padding keeps the scrollbar off the buttons rather than
+     sitting on top of them. */
+  .deck {
+    overflow-y: auto;
+    min-height: 0;
+    padding-right: 6px;
+  }
+
+  /* EMERGENCY STOP must never scroll out of reach. It stays pinned to the top
+     of the deck while everything beneath it moves - the one control whose
+     whole purpose is being available the instant it is needed. */
+  .panel-safety {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.7);
+  }
+
+  .panel-log { flex: 0 0 auto; }
+}
+
+/* ============================================================
+   RESPONSIVE
+
+   Below 1000px the deck drops beneath the machine rather than beside it, and
+   the app shell above does not apply - the page goes back to scrolling as one
+   document. That is the right behaviour on a phone: side-by-side panes that
+   scroll separately are awkward on a small screen, and a phone has no
+   permanently-visible monitor to keep the machine on.
+
+   The scene also gets a taller aspect ratio, since a wide frame on a phone
+   would be barely a sliver.
+   ============================================================ */
+@media (max-width: 1000px) {
+  .layout { grid-template-columns: 1fr; }
+  .scene-container { aspect-ratio: 4 / 3; }
+  body { padding: 10px; padding-bottom: 24px; }
+  .minimap { width: 118px; height: 118px; left: 10px; bottom: 10px; }
+  .minimap-dial { width: 82px; height: 82px; }
+  .minimap-readout { font-size: 0.5rem; gap: 5px; }
+}
+
+/* Respect a request for less motion: drop the attention-seeking pulses. The
+   colour alone still communicates the state. */
+@media (prefers-reduced-motion: reduce) {
+  .banner-estop, .alm-light.fault .alm-bulb { animation: none; }
+  .mini-gantry, .mini-tool { transition: none; }
+}

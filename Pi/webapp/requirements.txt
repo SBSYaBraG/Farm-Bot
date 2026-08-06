@@ -1,0 +1,20 @@
+# FarmBot Web Interface dependencies
+#
+# Install with:  pip install -r requirements.txt
+#
+# Deliberately minimal. There is no eventlet or gevent here: flask-socketio's
+# "threading" async mode uses plain Python threads, which is plenty for the
+# handful of browsers that will ever connect at once, and avoids compiled
+# dependencies that are awkward to install on a Raspberry Pi.
+
+Flask>=3.0.0
+Flask-SocketIO>=5.3.0
+
+# WebSocket transport for the threading async mode. Without this, Socket.IO
+# silently falls back to HTTP long-polling - it still works, but updates are
+# less smooth and it generates far more network chatter.
+simple-websocket>=1.0.0
+
+# Needed later, by the serial-backed hardware backend that talks to the
+# Arduino. Listed now because the Pi will need it and it is a trivial install.
+pyserial>=3.5
