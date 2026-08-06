@@ -1,0 +1,28 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+*.egg-info/
+
+# ---- PlatformIO (Arduino build output) ----
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# ---- macOS ----
+.DS_Store
+# AppleDouble resource-fork files. These appear in their hundreds when the
+# repo lives on an exFAT/network volume (such as the T7 drive) and will break
+# git outright if they land in .git/objects.
+._*
+
+# ---- Editors ----
+.vscode/
+.idea/
+
+# ---- AI model artifacts ----
+# Trained models are large binaries; keep them out of git history.
+*.h5
+*.keras
