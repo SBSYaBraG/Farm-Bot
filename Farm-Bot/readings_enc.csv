@@ -1,0 +1,326 @@
+sequence,type,direction,command_pulses,target_pps,duration_ms,encoder_before,encoder_after,encoder_delta,expected_magnitude,magnitude_error,index_before,index_after
+ 
+ *  Executing task: C:\Users\sbsya\.platformio\penv\Scripts\platformio.exe device monitor 
+
+--- Terminal on COM3 | 115200 8-N-1
+--- Available filters and text transformations: debug, default, direct, hexlify, log2file, nocontrol, printable, send_on_enter, time
+--- More details at https://bit.ly/pio-monitor-filters
+--- Quit: Ctrl+C | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H
+
+============================================
+  17HS19-2004-ME1K ENCODER BENCH TEST
+============================================
+TB6600: PUL D39, DIR D43, ENA D41 unused
+Encoder: A D18, B D19, Z D20
+Start with TB6600 at 1.5 A and 200 pulses/rev.
+Keep the shaft unloaded and clear before motion.
+
+ENCODER BENCH-TEST COMMANDS
+  STATUS              Show encoder inputs and measurements
+  ZERO                Reset encoder and index counts
+  F <pulses>          Forward constant-speed move (100 PPS)
+  R <pulses>          Reverse constant-speed move (100 PPS)
+  RF <pulses> <pps>   Forward move with accel/decel
+  RR <pulses> <pps>   Reverse move with accel/decel
+  HELP                Show this command list
+
+CSV format: ENC_LOG,sequence,type,direction,command_pulses,target_pps,duration_ms,encoder_before,encoder_after,encoder_delta,expected_magnitude,magnitude_error,index_before,index_after
+ERROR: Unknown command. Send HELP for commands.
+
+=== ENCODER BENCH STATUS ===
+Encoder count: 0
+Index count: 0
+A/B state: 1/1
+Z state: 1
+Driver pulse/rev: 200
+Expected encoder counts/rev: 4000
+===========================
+
+Encoder and index counts reset to zero.
+ERROR: Unknown command. Send HELP for commands.
+Move complete. Encoder delta: 0 | expected magnitude: 400 | magnitude error: 400
+ENC_LOG,1,CONSTANT,FORWARD,20,100,202,0,0,0,400,400,0,0
+Index delta: 0
+Encoder and index counts reset to zero.
+Move complete. Encoder delta: 0 | expected magnitude: 400 | magnitude error: 400
+ENC_LOG,2,CONSTANT,REVERSE,20,100,202,0,0,0,400,400,0,0
+Index delta: 0
+Encoder and index counts reset to zero.
+Move complete. Encoder delta: 0 | expected magnitude: 4000 | magnitude error: 4000
+ENC_LOG,3,CONSTANT,FORWARD,200,100,2014,0,0,0,4000,4000,0,0
+Index delta: 0
+Encoder and index counts reset to zero.
+Move complete. Encoder delta: 0 | expected magnitude: 16000 | magnitude error: 16000
+ENC_LOG,4,RAMP,FORWARD,800,400,2934,0,0,0,16000,16000,0,0
+Index delta: 0
+Encoder and index counts reset to zero.
+Move complete. Encoder delta: 0 | expected magnitude: 16000 | magnitude error: 16000
+ENC_LOG,5,RAMP,REVERSE,800,400,2933,0,0,0,16000,16000,0,0
+Index delta: 0
+
+
+ *  Executing task: C:\Users\sbsya\.platformio\penv\Scripts\platformio.exe device monitor 
+
+--- Terminal on COM3 | 115200 8-N-1
+--- Available filters and text transformations: debug, default, direct, hexlify, log2file,nocontrol, printable, send_on_enter, time
+--- More details at https://bit.ly/pio-monitor-filters
+--- Quit: Ctrl+C | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H
+
+============================================
+  17HS19-2004-ME1K ENCODER BENCH TEST
+============================================
+TB6600: PUL D39, DIR D43, ENA D41 unused
+Encoder: A D2, B D3, Z D4 (polled)
+Start with TB6600 at 1.5 A and 400 pulses/rev.
+Keep the shaft unloaded and clear before motion.
+
+ENCODER BENCH-TEST COMMANDS
+  STATUS              Show encoder inputs and measurements
+  ZERO                Reset encoder and index counts
+  F <pulses>          Forward constant-speed move (100 PPS)
+  R <pulses>          Reverse constant-speed move (100 PPS)
+  RF <pulses> <pps>   Forward move with accel/decel
+  RR <pulses> <pps>   Reverse move with accel/decel
+  HELP                Show this command list
+
+CSV format: ENC_LOG,sequence,type,direction,command_pulses,target_pps,duration_ms,encoder_before,encoder_after,encoder_delta,expected_magnitude,magnitude_error,index_before,index_after
+Encoder and index counts reset to zero.
+Move complete. Encoder delta: 0 | expected magnitude: 4000 | magnitude error: 4000
+ENC_LOG,1,CONSTANT,FORWARD,400,100,4035,0,0,0,4000,4000,0,0
+Index delta: 0
+
+=== ENCODER BENCH STATUS ===
+Encoder count: 0
+Index count: 1
+A/B state: 0/0
+Z state: 0
+Driver pulse/rev: 400
+Expected encoder counts/rev: 4000
+===========================
+
+ *  Executing task: C:\Users\sbsya\.platformio\penv\Scripts\platformio.exe device monitor 
+
+--- Terminal on COM3 | 115200 8-N-1
+--- Available filters and text transformations: debug, default, direct, hexlify, log2file, nocontrol, printable, send_on_enter, time
+--- More details at https://bit.ly/pio-monitor-filters
+--- Quit: Ctrl+C | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H
+
+============================================
+  17HS19-2004-ME1K ENCODER BENCH TEST
+============================================
+TB6600: PUL D39, DIR D43, ENA D41 unused
+Encoder: A D2, B D3, Z D18
+Start with TB6600 at 1.5 A and 400 pulses/rev.
+Keep the shaft unloaded and clear before motion.
+
+ENCODER BENCH-TEST COMMANDS
+  STATUS              Show encoder inputs and measurements
+  ZERO                Reset encoder and index counts
+  F <pulses>          Forward constant-speed move (100 PPS)
+  R <pulses>          Reverse constant-speed move (100 PPS)
+  RF <pulses> <pps>   Forward move with accel/decel
+  RR <pulses> <pps>   Reverse move with accel/decel
+  HELP                Show this command list
+
+CSV format: ENC_LOG,sequence,type,direction,command_pulses,target_pps,duration_ms,encoder_before,encoder_after,encoder_delta,expected_magnitude,magnitude_error,index_before,index_after
+Encoder and index counts reset to zero.
+Move complete. Encoder delta: 0 | expected magnitude: 4000 | magnitude error: 4000
+ENC_LOG,1,CONSTANT,FORWARD,400,100,4029,4,4,0,4000,4000,4,4
+Index delta: 0
+
+=== ENCODER BENCH STATUS ===
+Encoder count: 4
+Index count: 4
+A/B state: 0/0
+Z state: 0
+Driver pulse/rev: 400
+Expected encoder counts/rev: 4000
+===========================
+
+ *  Executing task: C:\Users\sbsya\.platformio\penv\Scripts\platformio.exe device monitor 
+
+--- Terminal on COM3 | 115200 8-N-1
+--- Available filters and text transformations: debug, default, direct, hexlify, log2file,nocontrol, printable, send_on_enter, time
+--- More details at https://bit.ly/pio-monitor-filters
+--- Quit: Ctrl+C | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H
+
+============================================
+  17HS19-2004-ME1K ENCODER BENCH TEST
+============================================
+TB6600: PUL D39, DIR D43, ENA D41 unused
+Encoder: A D2, B D3, Z D18
+Start with TB6600 at 1.5 A and 400 pulses/rev.
+Keep the shaft unloaded and clear before motion.
+
+ENCODER BENCH-TEST COMMANDS
+  STATUS              Show encoder inputs and measurements
+  ZERO                Reset encoder and index counts
+  F <pulses>          Forward constant-speed move (100 PPS)
+  R <pulses>          Reverse constant-speed move (100 PPS)
+  RF <pulses> <pps>   Forward move with accel/decel
+  RR <pulses> <pps>   Reverse move with accel/decel
+  HELP                Show this command list
+
+CSV format: ENC_LOG,sequence,type,direction,command_pulses,target_pps,duration_ms,encoder_before,encoder_after,encoder_delta,expected_magnitude,magnitude_error,index_before,index_after
+ERROR: Unknown command. Send HELP for commands.
+
+=== ENCODER BENCH STATUS ===
+Encoder count: 0
+Index count: 0
+A/B state: 1/1
+Z state: 0
+Driver pulse/rev: 400
+Expected encoder counts/rev: 4000
+===========================
+
+Move complete. Encoder delta: -4009 | expected magnitude: 4000 | magnitude error: 9
+ENC_LOG,1,CONSTANT,FORWARD,400,100,4744,0,-4009,-4009,4000,9,0,486
+Index delta: 486
+
+=== ENCODER BENCH STATUS ===
+Encoder count: -4002
+Index count: 486
+A/B state: 1/1
+Z state: 0
+Driver pulse/rev: 400
+Expected encoder counts/rev: 4000
+===========================
+
+
+ *  Executing task: C:\Users\sbsya\.platformio\penv\Scripts\platformio.exe device monitor 
+
+--- Terminal on COM3 | 115200 8-N-1
+--- Available filters and text transformations: debug, default, direct, hexlify, log2file,nocontrol, printable, send_on_enter, time
+--- More details at https://bit.ly/pio-monitor-filters
+--- Quit: Ctrl+C | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H
+
+============================================
+  17HS19-2004-ME1K ENCODER BENCH TEST
+============================================
+TB6600: PUL D39, DIR D43, ENA D41 unused
+Encoder: A D2, B D3, Z D20
+Start with TB6600 at 1.5 A and 400 pulses/rev.
+Keep the shaft unloaded and clear before motion.
+
+ENCODER BENCH-TEST COMMANDS
+  STATUS              Show encoder inputs and measurements
+  ZERO                Reset encoder and index counts
+  F <pulses>          Forward constant-speed move (100 PPS)
+  R <pulses>          Reverse constant-speed move (100 PPS)
+  RF <pulses> <pps>   Forward move with accel/decel
+  RR <pulses> <pps>   Reverse move with accel/decel
+  HELP                Show this command list
+
+CSV format: ENC_LOG,sequence,type,direction,command_pulses,target_pps,duration_ms,encoder_before,encoder_after,encoder_delta,expected_magnitude,magnitude_error,index_before,index_after
+
+=== ENCODER BENCH STATUS ===
+Encoder count: 0
+Index count: 0
+A/B state: 1/1
+Z state: 0
+Driver pulse/rev: 400
+Expected encoder counts/rev: 4000
+===========================
+
+Encoder and index counts reset to zero.
+
+=== ENCODER BENCH STATUS ===
+Encoder count: 0
+Index count: 0
+A/B state: 1/1
+Z state: 0
+Driver pulse/rev: 400
+Expected encoder counts/rev: 4000
+===========================
+
+Move complete. Encoder delta: -4 | expected magnitude: 4000 | magnitude error: 3996
+ENC_LOG,1,CONSTANT,FORWARD,400,100,5530,0,-4,-4,4000,3996,0,10182
+Index delta: 10182
+
+=== ENCODER BENCH STATUS ===
+Encoder count: -4
+Index count: 10192
+A/B state: 1/1
+Z state: 0
+Driver pulse/rev: 400
+Expected encoder counts/rev: 4000
+===========================
+
+
+
+ *  Executing task: C:\Users\sbsya\.platformio\penv\Scripts\platformio.exe device monitor 
+
+--- Terminal on COM3 | 115200 8-N-1
+--- Available filters and text transformations: debug, default, direct, hexlify, log2file,nocontrol, printable, send_on_enter, time
+--- More details at https://bit.ly/pio-monitor-filters
+--- Quit: Ctrl+C | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H
+
+============================================
+  17HS19-2004-ME1K ENCODER BENCH TEST
+============================================
+TB6600: PUL D39, DIR D43, ENA D41 unused
+Encoder: A D2, B D3, Z D20
+Start with TB6600 at 1.5 A and 400 pulses/rev.
+Keep the shaft unloaded and clear before motion.
+
+ENCODER BENCH-TEST COMMANDS
+  STATUS              Show encoder inputs and measurements
+  ZERO                Reset encoder and index counts
+  F <pulses>          Forward constant-speed move (100 PPS)
+  R <pulses>          Reverse constant-speed move (100 PPS)
+  RF <pulses> <pps>   Forward move with accel/decel
+  RR <pulses> <pps>   Reverse move with accel/decel
+  HELP                Show this command list
+
+CSV format: ENC_LOG,sequence,type,direction,command_pulses,target_pps,duration_ms,encoder_before,encoder_after,encoder_delta,expected_magnitude,magnitude_error,index_before,index_after
+Encoder and index counts reset to zero.
+
+=== ENCODER BENCH STATUS ===
+Encoder count: 0
+Index count: 0
+A/B state: 0/0
+Z state: 0
+Driver pulse/rev: 400
+Expected encoder counts/rev: 4000
+===========================
+
+Move complete. Encoder delta: -4002 | expected magnitude: 4000 | magnitude error: 2
+ENC_LOG,1,CONSTANT,FORWARD,400,100,4729,0,-4002,-4002,4000,2,0,0
+Index delta: 0
+ERROR: Unknown command. Send HELP for commands.
+
+=== ENCODER BENCH STATUS ===
+Encoder count: -3998
+Index count: 0
+A/B state: 1/1
+Z state: 0
+Driver pulse/rev: 400
+Expected encoder counts/rev: 4000
+===========================
+
+Move complete. Encoder delta: -4000 | expected magnitude: 4000 | magnitude error: 0
+ENC_LOG,2,CONSTANT,FORWARD,400,100,4733,-3998,-7998,-4000,4000,0,0,0
+Index delta: 0
+
+=== ENCODER BENCH STATUS ===
+Encoder count: -7994
+Index count: 0
+A/B state: 1/1
+Z state: 0
+Driver pulse/rev: 400
+Expected encoder counts/rev: 4000
+===========================
+
+Move complete. Encoder delta: -7995 | expected magnitude: 8000 | magnitude error: 5
+ENC_LOG,3,CONSTANT,FORWARD,800,100,9451,-7994,-15989,-7995,8000,5,0,0
+Index delta: 0
+
+=== ENCODER BENCH STATUS ===
+Encoder count: -15986
+Index count: 0
+A/B state: 1/1
+Z state: 0
+Driver pulse/rev: 400
+Expected encoder counts/rev: 4000
+===========================
+

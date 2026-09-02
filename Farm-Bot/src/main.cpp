@@ -1,11 +1,11 @@
 /**
  * main.cpp - FarmBot Multi-Axis Controller
  * 
- * 5-motor system with X, Y, Z axis control:
+ * 4-motor system with X, Y, Z axis control:
  * - X-axis: 2 motors synchronized (XL, XR)
  * - Y-axis: 1 motor
- * - Z-axis: 2 motors synchronized (ZL, ZR)
- * - Individual ALM monitoring for all 5 motors
+ * - Z-axis: 1 motor (ZL driver connection)
+ * - Individual ALM monitoring for all active motors
  * - Auto-homing at startup
  * - Full position tracking and safety features
  */
@@ -31,8 +31,8 @@ void printWelcomeMessage() {
   Serial.println("║ Configuration:                                ║");
   Serial.println("║  • X-Axis: 2 motors (XL, XR) synchronized    ║");
   Serial.println("║  • Y-Axis: 1 motor                            ║");
-  Serial.println("║  • Z-Axis: 2 motors (ZL, ZR) synchronized    ║");
-  Serial.println("║  • Total: 5 motors, 5 ALM monitors           ║");
+  Serial.println("║  • Z-Axis: 1 motor                            ║");
+  Serial.println("║  • Total: 4 motors, 4 ALM monitors           ║");
   Serial.println("║  • 3 limit switches (X, Y, Z)                ║");
   Serial.println("╠═══════════════════════════════════════════════╣");
   Serial.println("║ Quick Commands:                               ║");
@@ -61,7 +61,7 @@ void setup() {
   initializeLimitSwitch();
   
   Serial.println("\nAll systems initialized successfully!");
-  Serial.println("ALM monitoring active for all 5 motors");
+  Serial.println("ALM monitoring active for all 4 active motors");
   
   if (AUTO_HOME_ON_STARTUP) {
     Serial.println("\nAuto-homing enabled - starting in 3 seconds");
